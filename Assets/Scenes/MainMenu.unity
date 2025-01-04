@@ -13176,7 +13176,7 @@ MonoBehaviour:
   nameTextUI: {fileID: 2090897726}
   activeDialogueTextAsset: {fileID: 4900000, guid: e8a7efa4dbbf5e64eb3c8ff6b49c68ff, type: 3}
   DialogueUI: {fileID: 1735988149}
-  DialogeBox: {fileID: 609650116}
+  DialogueBox: {fileID: 609650116}
   BranchButtonPrefab: {fileID: 3413356238724650265, guid: f0e39e13e6b26ef4e8d35124f72826cb, type: 3}
   DialogueBranchPanel: {fileID: 1968362266}
   advanceDialogueButton: {fileID: 134250890}

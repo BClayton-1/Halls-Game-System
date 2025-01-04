@@ -26,7 +26,7 @@ public class DialogueManager : MonoBehaviour
 	private Queue<string> sentences;
 	private string sentence;
 	public GameObject DialogueUI;
-	public GameObject DialogeBox;
+	public GameObject DialogueBox;
 	public GameObject BranchButtonPrefab;
 	public GameObject DialogueBranchPanel;
 	private bool newBranch = false;
@@ -62,24 +62,27 @@ public class DialogueManager : MonoBehaviour
 		typeSound = Resources.Load<AudioClip>("Sounds/UI/Typesound");
 	}
 
-	public void StartDialogue(int dialogueTextNumber,int dialogueNumber)
+	public void StartDialogue(int _dialogueFileID, int _dialogueID)
 	{
 		TextMeshProUGUI interactTextUI = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>();
 		interactTextUI.text = string.Empty;
 		Cursor.lockState = CursorLockMode.None;
 		DialogueUI.SetActive(true);
-		dialogueFileID = dialogueTextNumber;
-		dialogueID = dialogueNumber;
+		dialogueFileID = _dialogueFileID;
+		dialogueID = _dialogueID;
 		Player_Manager.CheckMenuFreezePM();
-		if (Save_Data.ViewedDialogue.Contains(dialogueFileID.ToString() + "-" + dialogueID.ToString()) == false) // Add this dialogue to the list of viewed dialogues
+		string dialogueFileIDString = dialogueFileID.ToString();
+		string dialogueIDString = dialogueID.ToString();
+		string dialogueFullIDString = dialogueFileIDString + "-" + dialogueIDString;
+		if (Save_Data.ViewedDialogue.Contains(dialogueFullIDString) == false) // Add this dialogue to the list of viewed dialogues
 		{
-			Save_Data.ViewedDialogue.Add(dialogueFileID.ToString() + "-" + dialogueID.ToString());
-			Debug.Log(dialogueFileID.ToString() + "-" + dialogueID.ToString() + " viewed.");
+			Save_Data.ViewedDialogue.Add(dialogueFullIDString);
+			Debug.Log(dialogueFullIDString + " viewed.");
 		}
 		advanceDialogueButton.gameObject.SetActive(true);
-		activeDialogueTextAsset = Resources.Load<TextAsset>("Dialogue/dialogue_" + dialogueTextNumber.ToString()); // Load text file
+		activeDialogueTextAsset = Resources.Load<TextAsset>("Dialogue/dialogue_" + dialogueFileIDString); // Load text file
 		dialogueTextWhole = activeDialogueTextAsset.text;
-		dialogueTextWhole = dialogueTextWhole.Substring(dialogueTextWhole.IndexOf("DIALOGUE = " + dialogueNumber.ToString()) + ("DIALOGUE = ".Length + dialogueNumber.ToString().Length)); // Isolate a single dialogue
+		dialogueTextWhole = dialogueTextWhole.Substring(dialogueTextWhole.IndexOf("DIALOGUE = " + dialogueIDString) + ("DIALOGUE = ".Length + dialogueIDString.Length)); // Isolate a single dialogue
 		if (dialogueTextWhole.IndexOf("DIALOGUE =" ) > 0)
 		{
 			dialogueTextWhole = dialogueTextWhole.Substring(0, dialogueTextWhole.IndexOf("DIALOGUE ="));
@@ -97,12 +100,13 @@ public class DialogueManager : MonoBehaviour
 			}
 			if (dialogueStarted == true && !string.IsNullOrEmpty(line) && !line.StartsWith("//")) // ignore empty lines of dialogue and comments
 			{
-				string line0 = line;
+				// making a new substring of all content before comments in a given line
+				string lineNoComments = line;
 				if (line.IndexOf("//") > 0)
 				{
-					line0 = line.Substring(0, line.IndexOf("//"));
+					lineNoComments = line.Substring(0, line.IndexOf("//"));
 				}
-				sentences.Enqueue(line0); // adds to the dialogue to be printed
+				sentences.Enqueue(lineNoComments); // adds to the dialogue to be printed
 			}
 		}
 		dialogueStarted = false;
@@ -111,6 +115,7 @@ public class DialogueManager : MonoBehaviour
 
 	public void AdvanceDialogue()
 	{
+		// option to interrupt dialogue and go to next sentence (advance dialogue by clicking basically)
 		if (sentenceIsTyping == true)
         {
 			StopCoroutine(typeSentenceCoroutine);
@@ -133,12 +138,13 @@ public class DialogueManager : MonoBehaviour
 		ParseSentence(sentence);
 	}
 
-	IEnumerator TypeSentence(string st) // Types out the sentence character by character
+	IEnumerator TypeSentence(string sentence) // Types out the sentence character by character
 	{
 		bool richTextCommand = false;
 		sentenceIsTyping = true;
 		dialogueTextUI.text = "";
-		foreach (char letter in st.ToCharArray())
+		char[] sentenceAsChars = sentence.ToCharArray();
+		foreach (char letter in sentenceAsChars)
 		{
 			if (letter == '>')
             {
@@ -155,7 +161,7 @@ public class DialogueManager : MonoBehaviour
 			}
 			yield return new WaitForSeconds(0.04f);
 			dialogueTextUI.text += letter;
-			gameAudio.PlayOneShot(typeSound,0.5f);
+			gameAudio.PlayOneShot(typeSound, 0.5f);
 			yield return null;
 		}
 		sentenceIsTyping = false;
@@ -165,9 +171,9 @@ public class DialogueManager : MonoBehaviour
 		}
 	}
 
-	public void ParseSentence(string s) // Responsible for interpreting text files
+	public void ParseSentence(string sentence) // Responsible for interpreting text files
     {
-		if (s.StartsWith("NEWBRANCH"))
+		if (sentence.StartsWith("NEWBRANCH"))
         {
 			newBranch = true;
 			DialogueBranchPanel.SetActive(true);
@@ -177,7 +183,7 @@ public class DialogueManager : MonoBehaviour
         }
 		else if (newBranch == true)
         {
-			if (s.StartsWith("BRANCH"))
+			if (sentence.StartsWith("BRANCH"))
 			{
 				newBranch = false; // End branch
 				//Debug.Log("Branch Completed.");
@@ -185,26 +191,26 @@ public class DialogueManager : MonoBehaviour
 			}
 			string branchID = "";
 			string buttonText = "";
-			if (s.IndexOf(":") > 0)
+			if (sentence.IndexOf(":") > 0)
 			{
-				branchID = s.Substring(0, s.IndexOf(":")); // Get branch ID e.g "A" in "A: Hello"
-				buttonText = s.Substring(s.IndexOf(": ") + 2); // Get button text e.g "Hello" in "A: Hello"
+				branchID = sentence.Substring(0, sentence.IndexOf(":")); // Get branch ID e.g "A" in "A: Hello"
+				buttonText = sentence.Substring(sentence.IndexOf(": ") + 2); // Get button text e.g "Hello" in "A: Hello"
 			}
 			if (buttonText.IndexOf(" | ") > 0) // Do not display conditions in button text
             {
 				buttonText = buttonText.Substring(0, buttonText.IndexOf(" | "));
             }
 
-			string optionDetails = s.Substring(s.IndexOf(" | ") + " | ".Length);
+			string optionDetails = sentence.Substring(sentence.IndexOf(" | ") + " | ".Length);
 			string isolatedConditions;
 			GameObject OptionButton;
-			if (s.IndexOf("OPTIONCONDITIONS") > 0)
+			if (sentence.IndexOf("OPTIONCONDITIONS") > 0)
 			{
 				isolatedConditions = optionDetails.Substring(optionDetails.IndexOf("OPTIONCONDITIONS") + "OPTIONCONDITIONS".Length);
 				isolatedConditions = isolatedConditions.Substring(0, isolatedConditions.LastIndexOf(")") + 1);
 				//Debug.Log(isolatedConditions);
 				bool conditionsTrue = Condition_Checker.CheckConditions(isolatedConditions);
-				if (!(conditionsTrue != true && s.Contains("[H]")))
+				if (!(conditionsTrue != true && sentence.Contains("[H]")))
 				{
 					OptionButton = Instantiate(BranchButtonPrefab, DialogueBranchPanel.transform);
 					OptionButton.GetComponent<DialogueOption>().buttonTextUI.text = buttonText;
@@ -222,19 +228,19 @@ public class DialogueManager : MonoBehaviour
 			//Debug.Log("Creating button for option " + branchID);
 			AdvanceDialogue();
         }
-		else if (s.StartsWith("END_DIALOGUE"))
+		else if (sentence.StartsWith("END_DIALOGUE"))
         {
 			EndDialogue();
         }
-		else if (s.StartsWith("CHAR = ")) // e.g CHAR = Player
+		else if (sentence.StartsWith("CHAR = ")) // e.g CHAR = Player
 		{
-			activeChar = s.Substring(s.IndexOf("CHAR = ")+7); // activeChar == "Player"
+			activeChar = sentence.Substring(sentence.IndexOf("CHAR = ")+7); // activeChar == "Player"
 			nameTextUI.text = activeChar;
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("ENTERROOM")) // e.g ENTERROOM(Home) or ENTERROOM(Home,Fadeblack_Start,Fadeblack_End)
+		else if (sentence.StartsWith("ENTERROOM")) // e.g ENTERROOM(Home) or ENTERROOM(Home,Fadeblack_Start,Fadeblack_End)
 		{
-			string room = s.Substring(s.IndexOf("(") + 1);
+			string room = sentence.Substring(sentence.IndexOf("(") + 1);
 			string transitionStart = "Fadeblack_Start";
 			string transitionEnd = "Fadeblack_End";
 			if (room.IndexOf(",") > 0)
@@ -255,13 +261,13 @@ public class DialogueManager : MonoBehaviour
 			}
 			StartCoroutine(EnterRoom(room, transitionStart, transitionEnd));
         }
-		else if (s.StartsWith("ENTER3DROOM")) // e.g ENTER3DROOM(Courtyard,DoorTransform_Crossroads) or ENTER3DROOM(Courtyard,DoorTransform_Crossroads,Fadeblack_Start,Fadeblack_End)
+		else if (sentence.StartsWith("ENTER3DROOM")) // e.g ENTER3DROOM(Courtyard,DoorTransform_Crossroads) or ENTER3DROOM(Courtyard,DoorTransform_Crossroads,Fadeblack_Start,Fadeblack_End)
 		{
-			s = s.Replace(" ", string.Empty);
-			string room = s.Substring(s.IndexOf("(") + 1);
+			sentence = sentence.Replace(" ", string.Empty);
+			string room = sentence.Substring(sentence.IndexOf("(") + 1);
 			room = room.Substring(0, room.IndexOf(","));
-			s = s.Substring(s.IndexOf(",") + 1);
-			string doorTransform = s;
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+			string doorTransform = sentence;
 			if (doorTransform.IndexOf(",") > 0)
             {
 				doorTransform = doorTransform.Substring(0, doorTransform.IndexOf(","));
@@ -272,42 +278,42 @@ public class DialogueManager : MonoBehaviour
 			}
 			string transitionStart = "Fadeblack_Start";
 			string transitionEnd = "Fadeblack_End";
-			if (s.IndexOf(",") > 0)
+			if (sentence.IndexOf(",") > 0)
 			{
-				transitionStart = s.Substring(s.IndexOf(",") + 1);
+				transitionStart = sentence.Substring(sentence.IndexOf(",") + 1);
 				transitionStart = transitionStart.Substring(0, transitionStart.LastIndexOf(","));
 
-				transitionEnd = s.Substring(s.LastIndexOf(",") + 1);
+				transitionEnd = sentence.Substring(sentence.LastIndexOf(",") + 1);
 				transitionEnd = transitionEnd.Substring(0, transitionEnd.IndexOf(")"));
 			}
 
 			StartCoroutine(Enter3DRoom(room, doorTransform, transitionStart, transitionEnd));
 		}
-		else if (s.StartsWith("JUMP ")) // e.g JUMP A
+		else if (sentence.StartsWith("JUMP ")) // e.g JUMP A
         {
-			s = s.Substring("JUMP ".Length);
-			if (s.IndexOf("	") > 0)
+			sentence = sentence.Substring("JUMP ".Length);
+			if (sentence.IndexOf("	") > 0)
             {
-				s = s.Substring(0, s.IndexOf("	"));
+				sentence = sentence.Substring(0, sentence.IndexOf("	"));
             }
-			if (s.IndexOf(" ") > 0)
+			if (sentence.IndexOf(" ") > 0)
 			{
-				s = s.Substring(0, s.IndexOf(" "));
+				sentence = sentence.Substring(0, sentence.IndexOf(" "));
 
 			}
-			Jump(s);
+			Jump(sentence);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("BACKGROUND_MUSIC =")) // Sets the background music
+		else if (sentence.StartsWith("BACKGROUND_MUSIC =")) // Sets the background music
         {
-			if (s.StartsWith("BACKGROUND_MUSIC = NONE") || s.StartsWith("BACKGROUND_MUSIC = None") || s.StartsWith("BACKGROUND_MUSIC = none"))
+			if (sentence.StartsWith("BACKGROUND_MUSIC = NONE") || sentence.StartsWith("BACKGROUND_MUSIC = None") || sentence.StartsWith("BACKGROUND_MUSIC = none"))
             {
 				gameAudio.clip = null;
 				gameAudio.Stop();
             }
 			else
             {
-				string clipA = s.Substring("BACKGROUND_MUSIC = ".Length);
+				string clipA = sentence.Substring("BACKGROUND_MUSIC = ".Length);
 				if (clipA.IndexOf("	") > 0)
 				{
 					clipA = clipA.Substring(0, clipA.IndexOf("	"));
@@ -322,18 +328,18 @@ public class DialogueManager : MonoBehaviour
 			}
 			AdvanceDialogue();
         }
-		else if (s.StartsWith("PLAYSOUND")) // e.g PLAYSOUND(Damage_Sound)
+		else if (sentence.StartsWith("PLAYSOUND")) // e.g PLAYSOUND(Damage_Sound)
         {
-			string soundName = s.Substring("PLAYSOUND(".Length);
+			string soundName = sentence.Substring("PLAYSOUND(".Length);
 			soundName = soundName.Substring(0, soundName.IndexOf(")"));
 			AudioClip audioClip = Resources.Load<AudioClip>("Sounds/SFX/" + soundName);
 			effectAudio.PlayOneShot(audioClip, 1f);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("LEFT") || s.StartsWith("RIGHT") || s.StartsWith("CENTER")) // Set character image in the given position
+		else if (sentence.StartsWith("LEFT") || sentence.StartsWith("RIGHT") || sentence.StartsWith("CENTER")) // Set character image in the given position
         {
-			string imgPos = s.Substring(0,s.IndexOf(" ="));
-			string spriteS = s.Substring(s.IndexOf(" =") + " = ".Length);
+			string imgPos = sentence.Substring(0,sentence.IndexOf(" ="));
+			string spriteS = sentence.Substring(sentence.IndexOf(" =") + " = ".Length);
 			if (spriteS.IndexOf("	") > 0)
 			{
 				spriteS = spriteS.Substring(0, spriteS.IndexOf("	"));
@@ -351,10 +357,10 @@ public class DialogueManager : MonoBehaviour
 			SetImage(imgPos,newSprite);
 			AdvanceDialogue();
         }
-		else if (s.StartsWith("CUTLEFT") || s.StartsWith("CUTRIGHT") || s.StartsWith("CUTCENTER")) // Set character image in the given position without a fade transition
+		else if (sentence.StartsWith("CUTLEFT") || sentence.StartsWith("CUTRIGHT") || sentence.StartsWith("CUTCENTER")) // Set character image in the given position without a fade transition
 		{
-			string imgPos = s.Substring(0, s.IndexOf(" ="));
-			string spriteS = s.Substring(s.IndexOf(" =") + " = ".Length);
+			string imgPos = sentence.Substring(0, sentence.IndexOf(" ="));
+			string spriteS = sentence.Substring(sentence.IndexOf(" =") + " = ".Length);
 			if (spriteS.IndexOf("	") > 0)
 			{
 				spriteS = spriteS.Substring(0, spriteS.IndexOf("	"));
@@ -395,9 +401,9 @@ public class DialogueManager : MonoBehaviour
 
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("BACKGROUND =")) // Changes background
+		else if (sentence.StartsWith("BACKGROUND =")) // Changes background
         {
-			string spriteS = s.Substring(s.IndexOf(" =") + " = ".Length);
+			string spriteS = sentence.Substring(sentence.IndexOf(" =") + " = ".Length);
 			if (spriteS.IndexOf("	") > 0)
 			{
 				spriteS = spriteS.Substring(0, spriteS.IndexOf("	"));
@@ -416,23 +422,23 @@ public class DialogueManager : MonoBehaviour
 			AdvanceDialogue();
 
 		}
-		else if (s.StartsWith("WAIT"))
+		else if (sentence.StartsWith("WAIT"))
         {
 			float waitTime = 1f;
 
-			s = s.Substring("WAIT(".Length);
-			s = s.Substring(0, s.IndexOf(")"));
-			float.TryParse(s, out waitTime);
+			sentence = sentence.Substring("WAIT(".Length);
+			sentence = sentence.Substring(0, sentence.IndexOf(")"));
+			float.TryParse(sentence, out waitTime);
 			StartCoroutine(DialogueWait(waitTime));
         }
-		else if (s.StartsWith("ROLL(")) // e.g ROLL(Fortitude,50,A,B) (Roll addition, Difficulty (x% failure chance), fail branch, partial fail branch (optional)) ROLL(!Tenacity,50,A)
+		else if (sentence.StartsWith("ROLL(")) // e.g ROLL(Fortitude,50,A,B) (Roll addition, Difficulty (x% failure chance), fail branch, partial fail branch (optional)) ROLL(!Tenacity,50,A)
 		{
 			int rollAddition = 0; // +0
 			int rollDifficulty = 50; // 50% chance
 			bool partialBranchTrue = false;
 
-			s = s.Substring("ROLL(".Length);
-			string rollAdditionString = s.Substring(0, s.IndexOf(","));
+			sentence = sentence.Substring("ROLL(".Length);
+			string rollAdditionString = sentence.Substring(0, sentence.IndexOf(","));
 
 			bool rollSubtraction = false;
 			if (rollAdditionString.StartsWith("!"))
@@ -502,23 +508,23 @@ public class DialogueManager : MonoBehaviour
 				rollAddition = rollAddition * -1;
 			}
 
-			s = s.Substring(s.IndexOf(",") + 1);
-			int.TryParse(s.Substring(0, s.IndexOf(",")), out rollDifficulty);
-			s = s.Substring(s.IndexOf(",") + 1);
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+			int.TryParse(sentence.Substring(0, sentence.IndexOf(",")), out rollDifficulty);
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
 
 			string failBranch = "";
 			string partialBranch = "";
 
-			if (s.IndexOf(",") > 0)
+			if (sentence.IndexOf(",") > 0)
             {
 				partialBranchTrue = true;
-				failBranch = s.Substring(0, s.IndexOf(","));
-				s = s.Substring(s.IndexOf(",") + 1);
-				partialBranch = s.Substring(0, s.IndexOf(")"));
+				failBranch = sentence.Substring(0, sentence.IndexOf(","));
+				sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+				partialBranch = sentence.Substring(0, sentence.IndexOf(")"));
 			}
             else
             {
-				failBranch = s.Substring(0, s.IndexOf(")"));
+				failBranch = sentence.Substring(0, sentence.IndexOf(")"));
 			}
 
 			int rollValue = UnityEngine.Random.Range(1, 100) + rollAddition;
@@ -553,89 +559,89 @@ public class DialogueManager : MonoBehaviour
 			}
 
         }
-		else if (s.StartsWith("DISPLAYSTATUS"))
+		else if (sentence.StartsWith("DISPLAYSTATUS"))
         {
-			s = s.Substring("DISPLAYSTATUS(".Length);
-			s = s.Substring(0, s.IndexOf(")"));
-			Status_Text.DisplayStatus(s);
+			sentence = sentence.Substring("DISPLAYSTATUS(".Length);
+			sentence = sentence.Substring(0, sentence.IndexOf(")"));
+			Status_Text.DisplayStatus(sentence);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("REALTIME"))
+		else if (sentence.StartsWith("REALTIME"))
         {
 			bool isRealtime;
-			s = s.Substring("REALTIME(".Length);
-			s = s.Substring(0, s.IndexOf(")"));
-			bool.TryParse(s, out isRealtime);
+			sentence = sentence.Substring("REALTIME(".Length);
+			sentence = sentence.Substring(0, sentence.IndexOf(")"));
+			bool.TryParse(sentence, out isRealtime);
 			Time_Manager.realTimeActive = isRealtime;
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("ADDTIME")) // e.g ADDTIME(Hour,2)
+		else if (sentence.StartsWith("ADDTIME")) // e.g ADDTIME(Hour,2)
 		{
-			s = s.Replace(" ", string.Empty);
-			string unit = s.Substring("ADDTIME(".Length);
-			unit = unit.Substring(0,unit.IndexOf(","));
-			s = s.Substring(s.IndexOf(",") + 1);
-			s = s.Substring(0,s.IndexOf(")"));
+			sentence = sentence.Replace(" ", string.Empty);
+			string unit = sentence.Substring("ADDTIME(".Length);
+			unit = unit.Substring(0, unit.IndexOf(","));
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+			sentence = sentence.Substring(0,sentence.IndexOf(")"));
 			int amount = 0;
-			int.TryParse(s, out amount);
+			int.TryParse(sentence, out amount);
 
 			Time_Manager.AddTime(unit,amount);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("SETTIME")) // e.g SETTIME(1430) for 2:30
+		else if (sentence.StartsWith("SETTIME")) // e.g SETTIME(1430) for 2:30
         {
-			string timeString = s.Substring("SETTIME(".Length);
+			string timeString = sentence.Substring("SETTIME(".Length);
 			timeString = timeString.Substring(0, timeString.IndexOf(")"));
 			Time_Manager.SetTime(timeString);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("ADDEQUIPMENT")) // e.g ADDEQUIPMENT(Stinky_Cheese)
+		else if (sentence.StartsWith("ADDEQUIPMENT")) // e.g ADDEQUIPMENT(Stinky_Cheese)
 		{
-			string itemID = s.Substring(s.IndexOf("(") + 1);
+			string itemID = sentence.Substring(sentence.IndexOf("(") + 1);
 			itemID = itemID.Substring(0, itemID.IndexOf(")"));
 			Inventory_UI_Manager.AddEquipment(itemID);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("ADDITEM")) // e.g ADDITEM(Bones,1)
+		else if (sentence.StartsWith("ADDITEM")) // e.g ADDITEM(Bones,1)
 		{
-			s = s.Replace(" ", string.Empty);
-			string itemID = s.Substring(s.IndexOf("(") + 1);
+			sentence = sentence.Replace(" ", string.Empty);
+			string itemID = sentence.Substring(sentence.IndexOf("(") + 1);
 			itemID = itemID.Substring(0, itemID.IndexOf(","));
 			int quantity = 1;
-			s = s.Substring(s.IndexOf(",") + 1);
-			s = s.Substring(0, s.IndexOf(")"));
-			int.TryParse(s, out quantity);
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+			sentence = sentence.Substring(0, sentence.IndexOf(")"));
+			int.TryParse(sentence, out quantity);
 			Inventory_UI_Manager.AddItem(itemID,quantity);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("REMOVEITEM")) // e.g REMOVEITEM(Bones,1)
+		else if (sentence.StartsWith("REMOVEITEM")) // e.g REMOVEITEM(Bones,1)
 		{
-			s = s.Replace(" ", string.Empty);
-			string itemID = s.Substring(s.IndexOf("(") + 1);
+			sentence = sentence.Replace(" ", string.Empty);
+			string itemID = sentence.Substring(sentence.IndexOf("(") + 1);
 			itemID = itemID.Substring(0, itemID.IndexOf(","));
 			int quantity = 1;
-			s = s.Substring(s.IndexOf(",") + 1);
-			s = s.Substring(0, s.IndexOf(")"));
-			int.TryParse(s, out quantity);
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+			sentence = sentence.Substring(0, sentence.IndexOf(")"));
+			int.TryParse(sentence, out quantity);
 			Inventory_UI_Manager.RemoveItem(itemID, quantity);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("TAKEDAMAGE")) // e.g TAKEDAMAGE(Temporary,15)
+		else if (sentence.StartsWith("TAKEDAMAGE")) // e.g TAKEDAMAGE(Temporary,15)
         {
-			s = s.Replace(" ", string.Empty);
-			string damageType = s.Substring("TAKEDAMAGE(".Length);
+			sentence = sentence.Replace(" ", string.Empty);
+			string damageType = sentence.Substring("TAKEDAMAGE(".Length);
 			damageType = damageType.Substring(0, damageType.IndexOf(","));
 			int damageAmount = 0;
-			s = s.Substring(s.IndexOf(",") + 1);
-			int.TryParse(s.Substring(0, s.IndexOf(")")), out damageAmount);
+			sentence = sentence.Substring(sentence.IndexOf(",") + 1);
+			int.TryParse(sentence.Substring(0, sentence.IndexOf(")")), out damageAmount);
 			Player_Manager.TakeDamage(damageType, damageAmount);
 			AdvanceDialogue();
 		}
-		else if (s.StartsWith("CONDITIONBRANCH")) // e.g CONDITIONBRANCH((DOW == Friday),B)
+		else if (sentence.StartsWith("CONDITIONBRANCH")) // e.g CONDITIONBRANCH((DOW == Friday),B)
 		{
-			string conditions = s.Substring("CONDITIONBRANCH(".Length);
+			string conditions = sentence.Substring("CONDITIONBRANCH(".Length);
 			conditions = conditions.Substring(0, conditions.LastIndexOf(","));
-			string branchName = s.Substring(s.LastIndexOf(",") + 1);
+			string branchName = sentence.Substring(sentence.LastIndexOf(",") + 1);
 			branchName = branchName.Substring(0, branchName.IndexOf(")"));
 			branchName = branchName.Replace(" ", string.Empty);
 			Debug.Log(conditions);
@@ -650,7 +656,7 @@ public class DialogueManager : MonoBehaviour
 				AdvanceDialogue();
             }
         }
-		else if (s.StartsWith("BRANCH") || s.StartsWith("START_DIALOGUE")) // Do not type these lines
+		else if (sentence.StartsWith("BRANCH") || sentence.StartsWith("START_DIALOGUE")) // Do not type these lines
         {
 			AdvanceDialogue();
         }
