@@ -1,0 +1,326 @@
+// The Apiary is closed
+DIALOGUE = 1
+ROOM = Apiary
+PRIORITY = LOWEST
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Apiary_Closed
+BACKGROUND_MUSIC = Apiary_Song
+CHAR = Player
+*The apiary is closed, I'll have to come back later.*
+NEWBRANCH
+A: Go somewhere else
+
+BRANCH A
+ENTERROOM(Crossroads)
+
+
+
+// Apiary open hours
+DIALOGUE = 2
+CONDITIONS = (DOW[Wednesday,Tuesday,Monday] && (DAY[10-40] || DAY >= 70))
+ROOM = Apiary
+PRIORITY = LOW
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Apiary
+BACKGROUND_MUSIC = Apiary_Song
+CHAR = Player
+ADDITEM(Cheese,2)
+I'm at the apiary. What should I do?
+NEWBRANCH
+A: Look at bees
+B: Go somewhere else
+
+BRANCH A
+CHAR = Narrator
+*You look at the bees.*
+CHAR = Playes
+Ah yes, bees.
+ADDTIME(Hour,3)
+CHAR = Narrator
+*Hours pass.*
+CHAR = Player
+*Guess I should head home now*
+ENTERROOM(Home)
+
+BRANCH B
+CHAR = Player
+*Actually I'd rather bee ;) somewhere else*
+ENTERROOM(Crossroads)
+
+
+// Bee attack
+DIALOGUE = 3
+CONDITIONS = (DOW[Wednesday,Tuesday,Monday] && (DAY[10-40] || DAY >= 70))
+ROOM = Apiary
+PRIORITY = LOW
+
+START_DIALOGUE
+BACKGROUND = Apiary
+BACKGROUND_MUSIC = Apiary_Song
+CHAR = Player
+Time for bees again.
+CHAR = Narrator
+BACKGROUND_MUSIC = Beenoises
+EFFECT = bees
+*You walk into the apiary and find that the bees are attacking!*
+CHAR = Player
+CONDITIONBRANCH((Cognition >= 20),A)
+I think I am going to leave.
+ENTERROOM(Crossroads)
+
+BRANCH A
+Yay, bees!
+Uh oh.
+CHAR = Narrator
+*You are quickly overrun with bees, and within seconds you find yourself completely covered*
+ROLL(Tenacity,50,B,C)
+CHAR = Player
+HHHHHHHHHHHhhhhhh.
+CHAR = Narrator
+*You grit your teeth and will your way through the pain of being stung by hundreds of angry bees*
+PLAYSOUND(Damage_Sound)
+TAKEDAMAGE(Temporary,15)
+BACKGROUND_MUSIC = None
+*The bees respect your determination and soon leave you alone*
+CHAR = Player
+I feel like going somewhere else.
+ENTERROOM(Crossroads)
+
+BRANCH B
+*You begin to scream in pain as hundreds of bees bite and sting your body*
+TAKEDAMAGE(Permanent,5)
+TAKEDAMAGE(Temporary,50)
+ADDTIME(Hour,2)
+PLAYSOUND(Damage_Sound)
+BACKGROUND_MUSIC = None
+CLEAR_EFFECTS
+*They sting you over and over and over again for hours before they finally calm down*
+CHAR = Player
+I think I'm gonna go home.
+ENTERROOM(Home)
+
+BRANCH C
+CHAR = Player
+Oh god oh fuck.
+CHAR = Narrator
+*The bees begin stinging you over and over again*
+PLAYSOUND(Damage_Sound)
+TAKEDAMAGE(Temporary,35)
+TAKEDAMAGE(Permanent,1)
+CHAR = Player
+AAAIIIIIIIII!
+CHAR = Narrator
+*Soon enough the bees calm down*
+CHAR = Player
+I'm going home.
+ENTERROOM(Home)
+
+
+DIALOGUE = 4
+ROOM = Home
+PRIORITY = LOWEST
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Home
+BACKGROUND_MUSIC = Home
+CHAR = Player
+Home sweet home.
+Now that I'm home, I think it's time to kick back and...
+NEWBRANCH
+A: Play Oldschool Runescape
+A: Play Oldschool Runescape
+B: Sleep?
+
+BRANCH B
+I guess I should go to sleep.
+BACKGROUND = Black
+CHAR = ...
+You crawl into your unmade bed, hastily tossing aside bottles of mountain dew voltage from under your blanket.
+You lie down and close your eyes...
+But something is wrong.
+You only have 3 more days left of your Runescape membership.
+CHAR = Player
+JUMP A
+
+BRANCH A
+I think that I will log onto Oldschool Runescape.
+BACKGROUND = Runescape_1
+Ah yes.
+Let's see where we left off...
+BACKGROUND = Runescape_2
+Oh... right.
+Well, gotta get to 70 defense somehow.
+BACKGROUND = Black
+ADDTIME(HOUR,4)
+*Hours pass*
+BACKGROUND = Runescape_2
+I'm so close to leveling up, how much longer can it take?
+ADDTIME(DAY,1)
+SETTIME(0120)
+BACKGROUND = Black
+...
+I've finally done it...
+A defense level of 62.
+
+
+
+
+DIALOGUE = 5
+ROOM = Crossroads
+PRIORITY = LOWEST
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Crossroads
+BACKGROUND_MUSIC = Autumn_Voyage
+CHAR = Player
+I have some time, I should stop somewhere around town.
+Where should I go?
+NEWBRANCH
+A: Apiary | [H] OPTIONCONDITIONS(NOCOOLDOWN[Apiary])
+B: Home
+C: 3D test environment
+D: You have bones in your pocket! | [H] OPTIONCONDITIONS(ITEM[Bones] >= 3)
+
+BRANCH A
+I guess I'll go to the apiary.
+ENTERROOM(Apiary)
+
+BRANCH B
+I guess I'll go home.
+ENTERROOM(Home)
+
+BRANCH C
+I know just the place!
+ENTER3DROOM(3DTestScene,DoorTransform_Crossroads)
+
+BRANCH D
+I have at least 3 bones in my pocket!
+How did this happen!?
+Must have been that silly rat.
+I better pay him another visit.
+ENTER3DROOM(3DTestScene,DoorTransform_Crossroads)
+
+
+
+DIALOGUE = 6
+ROOM = Dungeon
+PRIORITY = LOWEST
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Dungeon
+BACKGROUND_MUSIC = Dungeonmusic
+CHAR = Player
+Oh boy, I sure am in The Dungeon!
+I should probably leave.
+ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)
+
+
+
+DIALOGUE = 7
+ROOM = Dungeon
+PRIORITY = LOW
+
+START_DIALOGUE
+BACKGROUND = Dungeon
+BACKGROUND_MUSIC = Dungeonmusic
+CHAR = Player
+I wonder if I'll find anything in this dungeon.
+Adventure awaits!
+BACKGROUND = Black
+CHAR = ...
+*You plunge into the darkness in hopes of finding something really cool*
+*As you stumble through the dark, you hear a strange noise and stop in your tracks*
+*You turn on your flashlight*
+BACKGROUND = RatCloseup
+WAIT(3)
+BACKGROUND = Dungeon
+CENTER = Rat
+CHAR = Player
+Oh shit! It's a rat!
+CHAR = Rat
+Hello.
+I have something for you.
+CHAR = ...
+*The rat reveals a large piece of cheese.*
+*You can smell its odor before he even takes it out.*
+ADDEQUIPMENT(Stinky_Cheese)
+ADDITEM(Bones,3)
+CHAR = Rat
+Here you go.
+Goodbye.
+CHAR = ...
+CENTER = None
+*The rat scurries away into the darkness.*
+CHAR = Player
+Huh.
+I guess I got what I came here for.
+Time to leave.
+ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)
+
+DIALOGUE = 8
+ROOM = Dungeon
+PRIORITY = MEDIUM
+REPEATABLE = TRUE
+CONDITIONS = (VIEWED[1-5-D] && !VIEWED[1-8-A])
+
+START_DIALOGUE
+BACKGROUND = Dungeon
+BACKGROUND_MUSIC = Dungeonmusic
+CHAR = Player
+Now where did that rat run off to?
+There's gotta be some way to find him.
+Better start looking.
+CHAR = ...
+*You set off into the depths of the dungeon*
+BACKGROUND = Black
+CONDITIONBRANCH((!EQUIPPED[Stinky_Cheese]),A)
+ADDTIME(MINUTE,30)
+CHAR = Player
+Gah!
+I've been at this for half an hour and still haven't the faintest idea where that rat might be.
+I think it's time to cut my losses and leave.
+ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)
+
+BRANCH A
+CHAR = ...
+ADDTIME(MINUTE,2)
+*Not five minutes pass before you hear the pitter-patter of rat feet*
+*You turn to the source of the noise*
+CHAR = Player
+CENTER = Rat
+BACKGROUND = Dungeon
+There you are!
+CHAR = Rat
+Ah, yes.
+I was able to find you by following the scent of the stinky cheese I gave you.
+I hope you've taken good care of it.
+CHAR = Player
+I have, but I actually wanted to ask you something.
+CHAR = Rat
+Oh, you're probably wondering about the bones am I right?
+They've been cluttering up the place recently so I figured you could take some off my hands.
+So I snuck them in your pocket when you were on your way out.
+CHAR = Player
+Okay.
+But why tho?
+CHAR = ...
+*The rat then begins waving its nose in the air and casts a magic spell that puts you to sleep*
+CENTER = None
+BACKGROUND = Black
+CHAR = Player
+ADDTIME(HOUR,6)
+zzzzzzzz
+BACKGROUND = Dungeon
+Woah!
+How long was I out?
+I should probably get out of this dungeon.
+ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)
+
+

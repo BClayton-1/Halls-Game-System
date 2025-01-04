@@ -1,0 +1,5 @@
+EVENT = 1
+3DSCENE = Box
+CONDITIONS = (ITEM[Bones] >= 3)
+
+START_EVENT

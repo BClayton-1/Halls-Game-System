@@ -1,0 +1,5 @@
+EVENT = 0
+3DSCENE = 3DTestScene
+CONDITIONS = (ITEM[Bones] >= 3)
+
+START_EVENT
