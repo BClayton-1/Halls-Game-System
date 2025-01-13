@@ -11,5 +11,4 @@ public class UIInventorySlot : MonoBehaviour
     public TextMeshProUGUI quantityTextUI;
     public Image itemIcon;
 
-
 }

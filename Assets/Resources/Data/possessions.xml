@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Possesions>
+  <!-- Items -->
+  <Possession name="Bones" identifier="item_bones" description="Bones are for burying!" type="Item" inventoryicon="Item/bones"/>
+  
+  <!-- Memories -->
+  <Possession name="Memory of Violence" identifier="memory_violence" description="You recall wild eyes and trembling hands." type="Item" inventoryicon="Memory/violence"/>
+  
+  <!-- Reputation -->
+  <Possession name="Reputation: The Rat Kingdom" identifier="reputation_ratkingdom" description="Tenacious little things rats are. A little cheese can go a long way with them though." type="Reputation" inventoryicon="Reputation/ratkingdom" minquantity="-100" maxquantity="100"/>
+  
+  <!-- Relations -->
+  <Possession name="Relation: Bug" identifier="relation_bug" description="He's an honest one, at least." type="Reputation" inventoryicon="Relation/bug" minquantity="-100" maxquantity="100"/>
+  
+  <!-- Events -->
+  
+  <!-- Trinkets -->
+  <Possession name="Stinky Cheese" identifier="trinket_stinkycheese" description="Holding this cheese makes you smell awful, but the rats seem to love it." type="Trinket" inventoryicon="Trinket/stinkycheese" maxquantity="1">
+    <Equipment/>
+  </Possession>
+  
+  <!-- Weapon -->
+  <Possession name="Saber" identifier="weapon_saber" description="Time has not been kind to this blade." type="Weapon" maxquantity="1">
+    <Equipment equippedsprite="Weapon/saber"/>
+  </Possession>
+  <!-- Back -->
+  <!-- Hat -->
+  <!-- Face -->
+  <!-- Eye -->
+  <!-- Mouth -->
+  <!-- Glove -->
+  <!-- Boot -->
+  <!-- Body -->
+  <!-- OuterBody -->
+  
+</Possesions>

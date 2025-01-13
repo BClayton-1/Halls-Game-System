@@ -309,7 +309,7 @@ They've been cluttering up the place recently so I figured you could take some o
 So I snuck them in your pocket when you were on your way out.
 CHAR = Player
 Okay.
-But why tho?
+But why?
 CHAR = ...
 *The rat then begins waving its nose in the air and casts a magic spell that puts you to sleep*
 CENTER = None
