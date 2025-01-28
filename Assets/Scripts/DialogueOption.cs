@@ -27,6 +27,7 @@ public class DialogueOption : MonoBehaviour
     void OnDisable()
     {
         Destroy(gameObject);
+        // Change
     }
     
 }
