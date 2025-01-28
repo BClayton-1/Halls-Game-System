@@ -2,20 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TextInteractable : Interactable
+namespace MeatGame.ThreeD
 {
-    public EventManager Event_Manager;
-
-    public string objectName = "Default";
-
-
-    void Start()
+    internal class TextInteractable : Interactable
     {
-        Event_Manager = GameObject.Find("GameManager").GetComponent<EventManager>();
-    }
+        // Script Dependencies
+        [SerializeField] private EventManager EventManager;
 
-    public override void TriggerInteract()
-    {
-        Event_Manager.StartInteractDialogue(objectName);
+        public string objectName = "Default";
+
+        protected override void TriggerInteractEffect()
+        {
+            EventManager.StartInteractDialogue(objectName);
+        }
     }
 }

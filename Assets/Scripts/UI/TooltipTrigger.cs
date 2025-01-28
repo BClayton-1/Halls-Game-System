@@ -3,41 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+namespace MeatGame
 {
-    public string content;
-    public string header;
-
-    [SerializeField] private RectTransform rectTransformA;
-
-    void Start()
+    public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        rectTransformA = gameObject.GetComponent<RectTransform>();
-    }
+        public string content;
+        public string header;
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        float offset = (GetWorldRect(rectTransformA).width / 2) + 2;
-        TooltipSystem.SetPos(transform.position, offset);
-        TooltipSystem.Show(content, header);
-    }
+        [SerializeField] private RectTransform rectTransformA;
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        TooltipSystem.Hide();
-    }
+        void Start()
+        {
+            rectTransformA = gameObject.GetComponent<RectTransform>();
+        }
 
-    private Rect GetWorldRect(RectTransform rectTransform)
-    {
-        Vector3[] corners = new Vector3[4];
-        rectTransform.GetWorldCorners(corners);
-        // Get the bottom left corner.
-        Vector3 position = corners[0];
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            float offset = (GetWorldRect(rectTransformA).width / 2) + 2;
+            TooltipSystem.SetPos(transform.position, offset);
+            TooltipSystem.Show(content, header);
+        }
 
-        Vector2 size = new Vector2(
-            rectTransform.lossyScale.x * rectTransform.rect.size.x,
-            rectTransform.lossyScale.y * rectTransform.rect.size.y);
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            TooltipSystem.Hide();
+        }
 
-        return new Rect(position, size);
+        private Rect GetWorldRect(RectTransform rectTransform)
+        {
+            Vector3[] corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+            // Get the bottom left corner.
+            Vector3 position = corners[0];
+
+            Vector2 size = new Vector2(
+                rectTransform.lossyScale.x * rectTransform.rect.size.x,
+                rectTransform.lossyScale.y * rectTransform.rect.size.y);
+
+            return new Rect(position, size);
+        }
     }
 }

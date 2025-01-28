@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Possesions>
   <!-- Items -->
-  <Possession name="Bones" identifier="item_bones" description="Bones are for burying!" type="Item" inventoryicon="Item/bones"/>
+  <Possession name="Bones" identifier="bones" description="Bones are for burying!" type="Flesh" inventoryicon="Item/bones"/>
+  <Possession name="Sturdy Femur" identifier="femur" description="You quite like it." type="Flesh" inventoryicon="Item/femur"/>
   
-  <!-- Memories -->
-  <Possession name="Memory of Violence" identifier="memory_violence" description="You recall wild eyes and trembling hands." type="Item" inventoryicon="Memory/violence"/>
+  <Possession name="A Rat" identifier="live_rat" description="What are you to do with this thing?" type="Oddity" inventoryicon="Item/live_rat"/>
+  
+  <Possession name="Empty Jar" identifier="empty_jar" description="It yearns to be filled." type="Jar" inventoryicon="Item/empty_jar"/>
+  <Possession name="Jar of Honey" identifier="jar_of_honey" description="The bees miss this dearly." type="Jar" inventoryicon="Item/jar_of_honey"/>
+  <Possession name="Jar of Blue Liquid" identifier="jar_of_blue" description="The smell suggests that drinking this would be unwise." type="Jar" inventoryicon="Item/jar_of_blue"/>
+  
+  <!-- Assets -->
+  <Possession name="Memory of Violence" identifier="memory_of_violence" description="You recall wild eyes and trembling hands." type="Asset" inventoryicon="Asset/memory_of_violence"/>
   
   <!-- Reputation -->
-  <Possession name="Reputation: The Rat Kingdom" identifier="reputation_ratkingdom" description="Tenacious little things rats are. A little cheese can go a long way with them though." type="Reputation" inventoryicon="Reputation/ratkingdom" minquantity="-100" maxquantity="100"/>
+  <Possession name="Reputation: The Rat Kingdom" identifier="reputation_ratkingdom" description="Tenacious little things rats are. A little cheese can go a long way with them though." type="Reputation" inventoryicon="Rep/reputation_ratkingdom"/>
   
-  <!-- Relations -->
-  <Possession name="Relation: Bug" identifier="relation_bug" description="He's an honest one, at least." type="Reputation" inventoryicon="Relation/bug" minquantity="-100" maxquantity="100"/>
+  <!-- Rep -->
+  <Possession name="Relation: Goober" identifier="relation_goober" description="What a freak." type="Relation" inventoryicon="Rep/relation_goober"/>
   
   <!-- Events -->
   
   <!-- Trinkets -->
-  <Possession name="Stinky Cheese" identifier="trinket_stinkycheese" description="Holding this cheese makes you smell awful, but the rats seem to love it." type="Trinket" inventoryicon="Trinket/stinkycheese" maxquantity="1">
+  <Possession name="Stinky Cheese" identifier="trinket_stinkycheese" description="Holding this cheese makes you smell awful, but the rats seem to love it." type="Trinket" inventoryicon="Trinket/stinkycheese">
     <Equipment/>
   </Possession>
   
   <!-- Weapon -->
-  <Possession name="Saber" identifier="weapon_saber" description="Time has not been kind to this blade." type="Weapon" maxquantity="1">
+  <Possession name="Saber" identifier="weapon_saber" description="Time has not been kind to this blade." type="Weapon">
     <Equipment equippedsprite="Weapon/saber"/>
   </Possession>
   <!-- Back -->

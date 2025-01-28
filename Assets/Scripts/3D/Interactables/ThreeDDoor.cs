@@ -2,33 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using MeatGame.Dialogue;
 
-public class ThreeDDoor : Interactable
+namespace MeatGame.ThreeD
 {
-    public string roomName;
-    public string doorTransform;
-    public bool enterRoomTwoD = true;
-
-    private DialogueManager Dialogue_Manager;
-
-    // Start is called before the first frame update
-    void Start()
+    internal class ThreeDDoor : Interactable
     {
-        Dialogue_Manager = GameObject.Find("DialogueManager").GetComponent<DialogueManager>();
-    }
+        /* Script Dependencies
+		DialogueManager
+		*/
 
+        public string roomName;
+        public string doorTransform;
+        public bool enterRoomTwoD = true;
 
-    public override void TriggerInteract()
-    {
-        if (enterRoomTwoD == true)
+        protected override void TriggerInteractEffect()
         {
-            StartCoroutine(Dialogue_Manager.EnterRoom(roomName));
-        }
-        else
-        {
-            StartCoroutine(Dialogue_Manager.Enter3DRoom(roomName, doorTransform));
+            if (enterRoomTwoD == true)
+            {
+                StartCoroutine(DialogueManager.Instance.EnterRoom(roomName));
+            }
+            else
+            {
+                StartCoroutine(DialogueManager.Instance.Enter3DRoom(roomName, doorTransform));
+            }
         }
     }
-
-
 }
