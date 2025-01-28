@@ -1,44 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using MeatGame.Dialogue;
 
-public class MenuFreeze : MonoBehaviour
+namespace MeatGame.ThreeD
 {
-    [SerializeField] private MouseLook Mouse_Look;
-    [SerializeField] private PlayerMovement Player_Movement;
-
-    private GameObject DialogueManager;
-    private GameObject PlayerMenu;
-
-    private GameObject playerMenu_Main;
-    private GameObject playerMenu_Inventory;
-    private GameObject dialogueMenu;
-
-    void Start()
+    public class MenuFreeze : MonoBehaviour
     {
-        DialogueManager = GameObject.Find("DialogueManager");
-        PlayerMenu = GameObject.Find("PlayerMenu");
+        /* Script Dependencies
+        DialogueManager
+        */
+        [SerializeField] private MouseLook Mouse_Look;
+        [SerializeField] private PlayerMovement Player_Movement;
 
-        playerMenu_Main = PlayerMenu.transform.GetChild(0).gameObject;
-        playerMenu_Inventory = PlayerMenu.transform.GetChild(1).gameObject;
-        dialogueMenu = DialogueManager.transform.GetChild(0).gameObject;
-
-        CheckFreezeMenu();
-    }
-
-    public void CheckFreezeMenu()
-    {
-        if (playerMenu_Main.activeSelf == true || playerMenu_Inventory.activeSelf == true || dialogueMenu.activeSelf == true)
+        void Awake()
         {
-            Mouse_Look.enabled = false;
-            Player_Movement.enabled = false;
-            Cursor.lockState = CursorLockMode.None;
+            PlayerMenu.Instance.AssignMenuFreeze(this);
+            Transform UIManagerTransform = GameObject.Find("UIManager").transform;
+            dialogueMenu = UIManagerTransform.GetChild(0).gameObject;
+            playerMenu = UIManagerTransform.GetChild(1).gameObject;
+
+            CheckFreezeMenu();
         }
-        else
+
+        private GameObject dialogueMenu;
+        private GameObject playerMenu;
+
+        public void CheckFreezeMenu()
         {
-            Mouse_Look.enabled = true;
-            Player_Movement.enabled = true;
-            Cursor.lockState = CursorLockMode.Locked;
+            if (dialogueMenu.activeSelf == true || playerMenu.activeSelf == true)
+            {
+                Mouse_Look.enabled = false;
+                Player_Movement.enabled = false;
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else
+            {
+                Mouse_Look.enabled = true;
+                Player_Movement.enabled = true;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
     }
 }

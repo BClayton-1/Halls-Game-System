@@ -4,29 +4,40 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerInteract : MonoBehaviour
+namespace MeatGame.ThreeD
 {
-    public TextMeshProUGUI interactTextUI;
-
-    // Start is called before the first frame update
-    void Start()
+    public class PlayerInteract : MonoBehaviour
     {
-        interactTextUI = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>();
-    }
+        /* Script Dependencies
+        KeyBinds
+        */
 
-    // Update is called once per frame
-    void Update()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3))
+        public TextMeshProUGUI interactTextUI;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            Interactable interactable = hit.collider.GetComponent<Interactable>();
-            if (interactable != null)
+            interactTextUI = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3))
             {
-                interactTextUI.text = "<color=orange><uppercase>[" + KeyCode.E.ToString() + "]</uppercase></color> " + interactable.interactText;
-                if (Input.GetKeyDown(KeyCode.E))
+                Interactable interactable = hit.collider.GetComponent<Interactable>();
+                if (interactable != null)
                 {
-                    interactable.TriggerInteract();
+                    interactTextUI.text = "<color=orange><uppercase>[" + KeyBinds.Instance.keyInteract.ToString() + "]</uppercase></color> " + interactable.interactText;
+                    if (Input.GetKeyDown(KeyBinds.Instance.keyInteract))
+                    {
+                        interactable.TriggerInteract();
+                        interactTextUI.text = string.Empty;
+                    }
+                }
+                else
+                {
                     interactTextUI.text = string.Empty;
                 }
             }
@@ -34,10 +45,6 @@ public class PlayerInteract : MonoBehaviour
             {
                 interactTextUI.text = string.Empty;
             }
-        }
-        else
-        {
-            interactTextUI.text = string.Empty;
         }
     }
 }

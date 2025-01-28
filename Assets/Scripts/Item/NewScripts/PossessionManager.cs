@@ -5,11 +5,16 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace MeatGame
+namespace MeatGame.Possession
 {
     internal class PossessionManager : MonoBehaviour
     {
-        public static PossessionManager instance;
+        public static PossessionManager Instance { get; private set; }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -34,7 +39,7 @@ namespace MeatGame
                 if (possession.Attribute("inventoryicon") != null)
                 {
                     string inventoryIconPath = possession.Attribute("inventoryicon").Value;
-                    _inventoryIcon = Resources.Load<Sprite>("Images/Possessions/InventoryIcon" + inventoryIconPath);
+                    _inventoryIcon = Resources.Load<Sprite>("Images/Possessions/InventoryIcon/" + inventoryIconPath);
                 }
                 if (_type < PossessionType.Trinket)
                 {

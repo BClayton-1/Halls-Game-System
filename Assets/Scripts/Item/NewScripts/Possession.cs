@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeatGame
+namespace MeatGame.Possession
 {
     internal class Possession
     {
         public Possession(string _identifier, string _name, PossessionType _type, int sortingID, string _description = "", Sprite _inventoryIcon = null)
         {
-            switch (_type)
+            /*switch (_type)
             {
                 case PossessionType n when ((int)n < 20):
                     minQuantity = 0;
@@ -22,7 +22,7 @@ namespace MeatGame
                     minQuantity = 0;
                     maxQuantity = 1;
                     break;
-            }
+            }*/
             identifier = _identifier;
             name = _name;
             type = _type;
@@ -36,8 +36,8 @@ namespace MeatGame
         public string description { get; private set; }
         public Sprite inventoryIcon { get; private set; }
 
-        public int minQuantity { get; private set; }
-        public int maxQuantity { get; private set; }
+        //public int minQuantity { get; private set; }
+        //public int maxQuantity { get; private set; }
 
         public int sortingID { get; private set; }
     }

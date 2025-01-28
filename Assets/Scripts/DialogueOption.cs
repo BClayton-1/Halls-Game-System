@@ -4,30 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class DialogueOption : MonoBehaviour
+namespace MeatGame.Dialogue
 {
-    public DialogueManager Dialogue_Manager;
-    public TextMeshProUGUI buttonTextUI;
-    public string branchID;
-    // another change
-    void Start()
+    public class DialogueOption : MonoBehaviour
     {
-        Dialogue_Manager = GameObject.Find("DialogueManager").GetComponent<DialogueManager>();
-    }
+        /* Script Dependencies
+		DialogueManager
+		*/
 
-    public void ChooseOption()
-    {
-        Dialogue_Manager.Jump(branchID);
-        GameObject.Find("DialogueBranchPanel").SetActive(false);
-        Dialogue_Manager.advanceDialogueButton.gameObject.SetActive(true);
-        Debug.Log("Option " + branchID + " chosen.");
-        Dialogue_Manager.AdvanceDialogue();
-    }
+        public TextMeshProUGUI buttonTextUI;
+        public string branchID;
 
-    void OnDisable()
-    {
-        Destroy(gameObject);
-        // Change
+        public void ChooseOption()
+        {
+            DialogueManager.Instance.Jump(branchID);
+            GameObject.Find("DialogueBranchPanel").SetActive(false);
+            DialogueManager.Instance.advanceDialogueButton.gameObject.SetActive(true);
+            Debug.Log("Option " + branchID + " chosen.");
+            DialogueManager.Instance.AdvanceDialogue();
+        }
+
+        void OnDisable()
+        {
+            Destroy(gameObject);
+        }
     }
-    
 }
