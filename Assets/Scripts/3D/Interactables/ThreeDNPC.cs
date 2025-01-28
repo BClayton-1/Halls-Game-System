@@ -1,34 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MeatGame.Dialogue;
 
-public class ThreeDNPC : Interactable
+namespace MeatGame.ThreeD
 {
-    public DialogueManager Dialogue_Manager;
-
-    public string NPCName = "Default";
-
-    public int dialogueTxt = 0;
-    public int dialogueNumber = 1;
-
-    private bool interacted = false; // Gonna try and get rid of this entirely
-
-
-    void Start()
+    internal class ThreeDNPC : Interactable
     {
-        Dialogue_Manager = GameObject.Find("DialogueManager").GetComponent<DialogueManager>();
-    }
+        /* Script Dependencies
+		DialogueManager
+		*/
 
-    public override void TriggerInteract()
-    {
-        if (interacted == false)
+        public string NPCName = "Default";
+
+        public int dialogueTxt = 0;
+        public int dialogueNumber = 1;
+
+        private bool interacted = false; // Gonna try and get rid of this entirely
+
+        protected override void TriggerInteractEffect()
         {
-            interacted = true;
-            Dialogue_Manager.StartDialogue(dialogueTxt, dialogueNumber);
-        }
-        else
-        {
-            Dialogue_Manager.StartDialogue(0, 0);
+            if (interacted == false)
+            {
+                interacted = true;
+                DialogueManager.Instance.StartDialogue(dialogueTxt, dialogueNumber);
+            }
+            else
+            {
+                DialogueManager.Instance.StartDialogue(0, 0);
+            }
         }
     }
 }

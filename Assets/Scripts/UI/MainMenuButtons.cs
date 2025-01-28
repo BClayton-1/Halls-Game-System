@@ -1,26 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MeatGame.Dialogue;
 
-public class MainMenuButtons : MonoBehaviour
+namespace MeatGame
 {
-    public DialogueManager Dialogue_Manager;
-    public LevelLoader Level_Loader;
-    public TimeManager Time_Manager;
-
-
-    public int dialogueTxt = 0;
-    public int dialogueNumber = 1;
-
-    public void StartNewGame()
+    public class MainMenuButtons : MonoBehaviour
     {
-        StartCoroutine(Level_Loader.SceneTransition("2DEnvironment"));
-        Time_Manager.day = 1;
-        Dialogue_Manager.StartDialogue(dialogueTxt, dialogueNumber);
-    }
+        /* Script Dependencies
+		DialogueManager
+		TimeManager
+		*/
 
-    public void QuitGame()
-    {
-        Application.Quit();
+        public LevelLoader Level_Loader;
+
+        public int dialogueTxt = 0;
+        public int dialogueNumber = 1;
+
+        public void StartNewGame()
+        {
+            StartCoroutine(Level_Loader.SceneTransition("2DEnvironment"));
+            TimeManager.Instance.SetDay(1);
+            DialogueManager.Instance.StartDialogue(dialogueTxt, dialogueNumber);
+        }
+
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
     }
 }

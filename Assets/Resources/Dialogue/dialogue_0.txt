@@ -20,7 +20,7 @@ You look like the fish from Noita.
 
 DIALOGUE = 2
 CHARACTER = Bastard
-CONDITIONS = (ITEM[Bones] >= 3)
+CONDITIONS = (ITEM[bones] >= 3)
 PRIORITY = MEDIUM
 REPEATABLE = True
 IGNORECOOLDOWN = True

@@ -2,16 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogueTrigger : MonoBehaviour
+namespace MeatGame.Dialogue
 {
-    public DialogueManager Dialogue_Manager;
-    public int dialogueTxt = 0;
-    public int dialogueNumber = 1;
-
-    public void CallStartDialogue()
+    public class DialogueTrigger : MonoBehaviour
     {
-        Dialogue_Manager.StartDialogue(dialogueTxt,dialogueNumber);
-        Destroy(gameObject);
-    }
+        /* Script Dependencies
+		DialogueManager
+		*/
 
+        public int dialogueTxt = 0;
+        public int dialogueNumber = 1;
+
+        public void CallStartDialogue()
+        {
+            DialogueManager.Instance.StartDialogue(dialogueTxt, dialogueNumber);
+            Destroy(gameObject);
+        }
+
+    }
 }

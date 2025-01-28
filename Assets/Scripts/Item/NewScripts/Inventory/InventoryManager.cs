@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using MeatGame.Possession.UI;
 
-namespace MeatGame.inventory
+namespace MeatGame.Possession
 {
-    internal class InventoryManager : MonoBehaviour
+    public class InventoryManager : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        public static InventoryManager Instance { get; private set; }
 
+        private void Awake()
+        {
+            Instance = this;
         }
 
         private Dictionary<string, PossessionSlot> playerInventory = new Dictionary<string, PossessionSlot>();
@@ -24,25 +26,30 @@ namespace MeatGame.inventory
             }
             if (!playerInventory.ContainsKey(identifier))
             {
-                Possession possession = PossessionManager.instance.GetPossession(identifier);
+                Possession possession = PossessionManager.Instance.GetPossession(identifier);
                 PossessionSlot possessionSlotToAdd = new PossessionSlot(possession);
                 possessionSlotToAdd.AddQuantity(quantity);
                 playerInventory.Add(identifier, possessionSlotToAdd);
-                SortInventory();
+                InventoryUI.Instance.AddInventorySlotUI(possessionSlotToAdd); // MeatGame.Inventory.UI
                 return;
             }
             playerInventory[identifier].AddQuantity(quantity);
+            InventoryUI.Instance.UpdateExistingSlotUI(playerInventory[identifier]); // MeatGame.Inventory.UI
         }
 
-        private void SortInventory()
+        /*private void SortInventory()
         {
             if (playerInventory.Count() < 2)
             {
                 return;
             }
-            var result = from kvp in playerInventory orderby kvp.Value.possession.sortingID ascending select kvp;
-            playerInventory = (Dictionary<string, PossessionSlot>)result;
-        }
+            //from kvp in playerInventory orderby kvp.Value.possession.sortingID ascending select kvp;
+            playerInventory = playerInventory.OrderBy(key => key.Value.possession.sortingID);
+            foreach (KeyValuePair<string, PossessionSlot> kvp in playerInventory)
+            {
+                Debug.Log(kvp.Key);
+            }
+        }*/
 
         public void RemovePossession(string identifier, int quantity = 1)
         {
@@ -60,7 +67,19 @@ namespace MeatGame.inventory
             if (playerInventory[identifier].RemoveSlotCheck())
             {
                 playerInventory.Remove(identifier);
+                InventoryUI.Instance.RemoveInventorySlotUI(identifier); // MeatGame.Inventory.UI
+                return;
             }
+            InventoryUI.Instance.UpdateExistingSlotUI(playerInventory[identifier]); // MeatGame.Inventory.UI
+        }
+
+        public int GetQuantity(string identifier)
+        {
+            if (playerInventory.ContainsKey(identifier))
+            {
+                return playerInventory[identifier].quantity;
+            }
+            return 0;
         }
     }
 }

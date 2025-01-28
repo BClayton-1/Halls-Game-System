@@ -2,15 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Interactable : MonoBehaviour
+namespace MeatGame.ThreeD
 {
-
-    public string interactText = "Interact";
-
-
-
-    public virtual void TriggerInteract()
+    internal abstract class Interactable : MonoBehaviour
     {
-        Debug.Log("Interaction triggered");
+        /* Script Dependencies
+        PlayerMenu
+        */
+
+        public string interactText = "Interact";
+
+        public void TriggerInteract()
+        {
+            if (PlayerMenu.Instance.playerMenuObject.activeSelf)
+            {
+                return;
+            }
+            TriggerInteractEffect();
+        }
+
+        protected abstract void TriggerInteractEffect();
+
+
     }
 }
