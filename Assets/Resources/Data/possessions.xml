@@ -1,43 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Possesions>
   <!-- Items -->
-  <Possession name="Bones" identifier="bones" description="Bones are for burying!" type="Flesh" inventoryicon="Item/bones"/>
+  <Possession name="Bones" identifier="bones" description="Bones are for burying!" type="Flesh" inventoryicon="Item/bones">
+    <Usable>
+	  <Instant usetext="Bury">
+	    <RemovePossession identifier="bones" quantity="1"/>
+	  </Instant>
+	</Usable>
+  </Possession>
   <Possession name="Sturdy Femur" identifier="femur" description="You quite like it." type="Flesh" inventoryicon="Item/femur"/>
   
-  <Possession name="A Rat" identifier="live_rat" description="What are you to do with this thing?" type="Oddity" inventoryicon="Item/live_rat"/>
+  <Possession name="A Rat" identifier="live_rat" description="What are you to do with this?" type="Oddity" inventoryicon="Item/live_rat"/>
+  <Possession name="Stinky Cheese" identifier="cheese" description="Holding this cheese makes you smell awful, but the rats seem to love it." type="Oddity" inventoryicon="Trinket/stinky_cheese">
+    <Usable>
+	  <Instant usetext="Eat">
+	    <RemovePossession identifier="cheese" quantity="1"/>
+	  </Instant>
+	</Usable>
+  </Possession>
   
   <Possession name="Empty Jar" identifier="empty_jar" description="It yearns to be filled." type="Jar" inventoryicon="Item/empty_jar"/>
-  <Possession name="Jar of Honey" identifier="jar_of_honey" description="The bees miss this dearly." type="Jar" inventoryicon="Item/jar_of_honey"/>
-  <Possession name="Jar of Blue Liquid" identifier="jar_of_blue" description="The smell suggests that drinking this would be unwise." type="Jar" inventoryicon="Item/jar_of_blue"/>
+  <Possession name="Jar of Honey" identifier="jar_of_honey" description="The bees miss this dearly." type="Jar" inventoryicon="Item/jar_of_honey">
+    <Usable>
+	  <Instant usetext="Drink">
+	    <RemovePossession identifier="jar_of_honey" quantity="1"/>
+	    <AddPossession identifier="empty_jar" quantity="1"/>
+	  </Instant>
+	  <Instant usetext="Empty">
+	    <RemovePossession identifier="jar_of_honey" quantity="1"/>
+	    <AddPossession identifier="empty_jar" quantity="1"/>
+	  </Instant>
+	</Usable>
+  </Possession>
+  <Possession name="Jar of Blue Liquid" identifier="jar_of_blue" description="Drinking this seems unwise." type="Jar" inventoryicon="Item/jar_of_blue"/>
   
   <!-- Assets -->
   <Possession name="Memory of Violence" identifier="memory_of_violence" description="You recall wild eyes and trembling hands." type="Asset" inventoryicon="Asset/memory_of_violence"/>
   
-  <!-- Reputation -->
+  <!-- Rep -->
   <Possession name="Reputation: The Rat Kingdom" identifier="reputation_ratkingdom" description="Tenacious little things rats are. A little cheese can go a long way with them though." type="Reputation" inventoryicon="Rep/reputation_ratkingdom"/>
   
-  <!-- Rep -->
   <Possession name="Relation: Goober" identifier="relation_goober" description="What a freak." type="Relation" inventoryicon="Rep/relation_goober"/>
   
   <!-- Events -->
   
   <!-- Trinkets -->
-  <Possession name="Stinky Cheese" identifier="trinket_stinkycheese" description="Holding this cheese makes you smell awful, but the rats seem to love it." type="Trinket" inventoryicon="Trinket/stinkycheese">
-    <Equipment/>
+  <Possession name="Stinky Cheese" identifier="trinket_stinkycheese" description="Holding this cheese makes you smell awful, but the rats seem to love it." type="Trinket" inventoryicon="Trinket/stinky_cheese">
+    <Usable>
+	  <Equipment/>
+	</Usable>
   </Possession>
   
-  <!-- Weapon -->
-  <Possession name="Saber" identifier="weapon_saber" description="Time has not been kind to this blade." type="Weapon">
-    <Equipment equippedsprite="Weapon/saber"/>
-  </Possession>
-  <!-- Back -->
   <!-- Hat -->
-  <!-- Face -->
   <!-- Eye -->
   <!-- Mouth -->
+  <!-- Face -->
   <!-- Glove -->
-  <!-- Boot -->
-  <!-- Body -->
   <!-- OuterBody -->
-  
+  <!-- Body -->
+  <!-- Boot -->
+  <!-- Back -->
+  <!-- Weapon -->
+  <Possession name="Saber" identifier="weapon_saber" description="Time has not been kind to this blade." type="Weapon">
+    <Usable>
+      <Equipment equippedsprite="Weapon/saber"/>
+	</Usable>
+  </Possession>
 </Possesions>

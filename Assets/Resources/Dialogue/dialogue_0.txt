@@ -4,29 +4,29 @@ CHAR = Player
 There's nothing else I can think to say to them right now.
 
 DIALOGUE = 1
-CHARACTER = Bastard
+CHARACTER = Goober
 PRIORITY = LOWEST
 REPEATABLE = True
 IGNORECOOLDOWN = True
 3DSCENE = 3DTestScene
 
-PLACENPC(Bastard,NPCPos_Bastard_1)
+PLACENPC(Bastard,NPCPos_Goober_1)
 
 START_DIALOGUE
-CHAR = Bastard
-You look like the fish from Noita.
+CHAR = Goober
+You look like a fish.
 
 
 
 DIALOGUE = 2
-CHARACTER = Bastard
-CONDITIONS = (ITEM[bones] >= 3)
+CHARACTER = Goober
+CONDITIONS = (POSSESSION[bones] > 1)
 PRIORITY = MEDIUM
 REPEATABLE = True
 IGNORECOOLDOWN = True
 3DSCENE = Box
 
-PLACENPC(Bastard,NPCPos_Bastard_1)
+PLACENPC(Goober,NPCPos_Goober_1)
 
 START_DIALOGUE
 CHAR = Bastard

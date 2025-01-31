@@ -6,29 +6,30 @@ namespace MeatGame
 {
     public class TooltipSystem : MonoBehaviour
     {
-        public static TooltipSystem current;
-        public Tooltip tooltip;
+        public static TooltipSystem Instance { get; private set; }
 
-        public void Awake()
+        private void Awake()
         {
-            current = this;
+            Instance = this;
         }
 
-        public static void Show(string content, string header = "")
+        [SerializeField] private Tooltip tooltip;
+
+        public void Show(string content, string header = "")
         {
-            current.tooltip.SetText(content, header);
-            current.tooltip.gameObject.SetActive(true);
+            tooltip.SetText(content, header);
+            tooltip.gameObject.SetActive(true);
         }
 
-        public static void Hide()
+        public void Hide()
         {
-            current.tooltip.gameObject.SetActive(false);
+            tooltip.gameObject.SetActive(false);
         }
 
-        public static void SetPos(Vector2 pos, float offset)
+        public void SetPos(Vector2 pos, float offset)
         {
             pos.x = pos.x + offset;
-            current.tooltip.gameObject.transform.position = pos;
+            tooltip.gameObject.transform.position = pos;
         }
     }
 }

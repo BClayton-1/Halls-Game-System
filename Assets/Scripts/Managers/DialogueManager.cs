@@ -617,7 +617,7 @@ namespace MeatGame.Dialogue
 				Inventory_UI_Manager.AddEquipment(itemID);
 				AdvanceDialogue();
 			}*/
-			else if (sentence.StartsWith("ADDITEM")) // e.g ADDITEM(Bones,1)
+			else if (sentence.StartsWith("ADDPOSSESSION")) // e.g ADDPOSSESSION(bones,1)
 			{
 				sentence = sentence.Replace(" ", string.Empty);
 				string identifier = sentence.Substring(sentence.IndexOf("(") + 1);
@@ -629,7 +629,7 @@ namespace MeatGame.Dialogue
 				InventoryManager.Instance.AddPossession(identifier, quantity); // MeatGame.Inventory
 				AdvanceDialogue();
 			}
-			else if (sentence.StartsWith("REMOVEITEM")) // e.g REMOVEITEM(Bones,1)
+			else if (sentence.StartsWith("REMOVEPOSSESSION")) // e.g REMOVEPOSSESSION(bones,1)
 			{
 				sentence = sentence.Replace(" ", string.Empty);
 				string identifier = sentence.Substring(sentence.IndexOf("(") + 1);

@@ -11,6 +11,8 @@ namespace MeatGame.Possession
         Junk = 2,
         Oddity = 3,
         Jar = 4,
+        TrinketItem = 18,
+        WearableItem = 19,
 
         // Asset: 20-39
         Memory = 20,
@@ -83,6 +85,8 @@ namespace MeatGame.Possession
 
         Dictionary<PossessionType, string> PossessionTypeSpecialNames = new Dictionary<PossessionType, string> // Names whose values are different than in the enum
         {
+            {PossessionType.TrinketItem, "Trinket"},
+            {PossessionType.WearableItem, "Equipment"},
             {PossessionType.OuterBody, "Outer Body"}
         };
     }

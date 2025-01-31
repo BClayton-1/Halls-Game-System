@@ -1,176 +1,21 @@
-// The Apiary is closed
 DIALOGUE = 1
-ROOM = Apiary
-PRIORITY = LOWEST
-REPEATABLE = TRUE
-
-START_DIALOGUE
-BACKGROUND = Apiary_Closed
-BACKGROUND_MUSIC = Apiary_Song
-CHAR = Player
-*The apiary is closed, I'll have to come back later.*
-NEWBRANCH
-A: Go somewhere else
-
-BRANCH A
-ENTERROOM(Crossroads)
-
-
-
-// Apiary open hours
-DIALOGUE = 2
-CONDITIONS = (DOW[Wednesday,Tuesday,Monday] && (DAY[10-40] || DAY >= 70))
-ROOM = Apiary
-PRIORITY = LOW
-REPEATABLE = TRUE
-
-START_DIALOGUE
-BACKGROUND = Apiary
-BACKGROUND_MUSIC = Apiary_Song
-CHAR = Player
-ADDITEM(cheese,2)
-I'm at the apiary. What should I do?
-NEWBRANCH
-A: Look at bees
-B: Go somewhere else
-
-BRANCH A
-CHAR = Narrator
-*You look at the bees.*
-CHAR = Playes
-Ah yes, bees.
-ADDTIME(Hour,3)
-CHAR = Narrator
-*Hours pass.*
-CHAR = Player
-*Guess I should head home now*
-ENTERROOM(Home)
-
-BRANCH B
-CHAR = Player
-*Actually I'd rather bee ;) somewhere else*
-ENTERROOM(Crossroads)
-
-
-// Bee attack
-DIALOGUE = 3
-CONDITIONS = (DOW[Wednesday,Tuesday,Monday] && (DAY[10-40] || DAY >= 70))
-ROOM = Apiary
-PRIORITY = LOW
-
-START_DIALOGUE
-BACKGROUND = Apiary
-BACKGROUND_MUSIC = Apiary_Song
-CHAR = Player
-Time for bees again.
-CHAR = Narrator
-BACKGROUND_MUSIC = Beenoises
-EFFECT = bees
-*You walk into the apiary and find that the bees are attacking!*
-CHAR = Player
-CONDITIONBRANCH((Cognition >= 20),A)
-I think I am going to leave.
-ENTERROOM(Crossroads)
-
-BRANCH A
-Yay, bees!
-Uh oh.
-CHAR = Narrator
-*You are quickly overrun with bees, and within seconds you find yourself completely covered*
-ROLL(Tenacity,50,B,C)
-CHAR = Player
-HHHHHHHHHHHhhhhhh.
-CHAR = Narrator
-*You grit your teeth and will your way through the pain of being stung by hundreds of angry bees*
-PLAYSOUND(Damage_Sound)
-TAKEDAMAGE(Temporary,15)
-BACKGROUND_MUSIC = None
-*The bees respect your determination and soon leave you alone*
-CHAR = Player
-I feel like going somewhere else.
-ENTERROOM(Crossroads)
-
-BRANCH B
-*You begin to scream in pain as hundreds of bees bite and sting your body*
-TAKEDAMAGE(Permanent,5)
-TAKEDAMAGE(Temporary,50)
-ADDTIME(Hour,2)
-PLAYSOUND(Damage_Sound)
-BACKGROUND_MUSIC = None
-CLEAR_EFFECTS
-*They sting you over and over and over again for hours before they finally calm down*
-CHAR = Player
-I think I'm gonna go home.
-ENTERROOM(Home)
-
-BRANCH C
-CHAR = Player
-Oh god oh fuck.
-CHAR = Narrator
-*The bees begin stinging you over and over again*
-PLAYSOUND(Damage_Sound)
-TAKEDAMAGE(Temporary,35)
-TAKEDAMAGE(Permanent,1)
-CHAR = Player
-AAAIIIIIIIII!
-CHAR = Narrator
-*Soon enough the bees calm down*
-CHAR = Player
-I'm going home.
-ENTERROOM(Home)
-
-
-DIALOGUE = 4
 ROOM = Home
-PRIORITY = LOWEST
-REPEATABLE = TRUE
 
 START_DIALOGUE
+CHAR = Player
 BACKGROUND = Home
 BACKGROUND_MUSIC = Home
-CHAR = Player
-Home sweet home.
-Now that I'm home, I think it's time to kick back and...
-NEWBRANCH
-A: Play Oldschool Runescape
-A: Play Oldschool Runescape
-B: Sleep?
-
-BRANCH B
-I guess I should go to sleep.
-BACKGROUND = Black
-CHAR = ...
-You crawl into your unmade bed, hastily tossing aside bottles of mountain dew voltage from under your blanket.
-You lie down and close your eyes...
-But something is wrong.
-You only have 3 more days left of your Runescape membership.
-CHAR = Player
-JUMP A
-
-BRANCH A
-I think that I will log onto Oldschool Runescape.
-BACKGROUND = Runescape_1
-Ah yes.
-Let's see where we left off...
-BACKGROUND = Runescape_2
-Oh... right.
-Well, gotta get to 70 defense somehow.
-BACKGROUND = Black
-ADDTIME(HOUR,4)
-*Hours pass*
-BACKGROUND = Runescape_2
-I'm so close to leveling up, how much longer can it take?
-ADDTIME(DAY,1)
-SETTIME(0120)
-BACKGROUND = Black
-...
-I've finally done it...
-A defense level of 62.
+SETTIME(0700)
+Time to start the day!
+ADDPOSSESSION(empty_jar,2)
+I'll take a couple jars with me just in case.
+ENTERROOM(Crossroads)
 
 
 
 
-DIALOGUE = 5
+
+DIALOGUE = 2
 ROOM = Crossroads
 PRIORITY = LOWEST
 REPEATABLE = TRUE
@@ -185,7 +30,7 @@ NEWBRANCH
 A: Apiary | [H] OPTIONCONDITIONS(NOCOOLDOWN[Apiary])
 B: Home
 C: 3D test environment
-D: You have bones in your pocket! | [H] OPTIONCONDITIONS(ITEM[bones] >= 3)
+D: You have bones in your pocket! | [H] OPTIONCONDITIONS((POSSESSION[bones] >= 3) && !VIEWED[1-1-D])
 
 BRANCH A
 I guess I'll go to the apiary.
@@ -208,7 +53,80 @@ ENTER3DROOM(3DTestScene,DoorTransform_Crossroads)
 
 
 
-DIALOGUE = 6
+
+
+// The Apiary is closed
+DIALOGUE = 3
+ROOM = Apiary
+PRIORITY = LOWEST
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Apiary_Closed
+BACKGROUND_MUSIC = Apiary_Song
+CHAR = Player
+*The apiary is closed, I'll have to come back later.*
+NEWBRANCH
+A: Go somewhere else
+B: Wait for it to open | [H] OPTIONCONDITIONS(DOW[Monday,Tuesday,Wednesday,Thursday,Friday] && (TIME >= 0700 && TIME < 0800))
+
+BRANCH A
+ENTERROOM(Crossroads)
+
+BRANCH B
+*It looks like they'll be open soon, so I'll stick around.*
+SETTIME(0800)
+ENTERROOM(Apiary)
+
+
+
+
+// Apiary open hours
+DIALOGUE = 4
+CONDITIONS = (DOW[Monday,Tuesday,Wednesday,Thursday,Friday] && (TIME >= 0800 && TIME < 1800))
+ROOM = Apiary
+PRIORITY = LOW
+REPEATABLE = TRUE
+
+START_DIALOGUE
+BACKGROUND = Apiary
+BACKGROUND_MUSIC = Apiary_Song
+BRANCH A
+CHAR = Player
+I'm at the apiary. What should I do?
+NEWBRANCH
+B: Look at bees
+C: Fill a jar with honey | [H] OPTIONCONDITIONS(POSSESSION[empty_jar] > 0)
+D: Go somewhere else
+
+BRANCH B
+CHAR = Narrator
+*You look at the bees.*
+CHAR = Playes
+Ah yes, bees.
+ADDTIME(Hour,3)
+CHAR = Narrator
+*Hours pass.*
+CHAR = Player
+*Guess I should head back now*
+ENTERROOM(Crossroads)
+
+BRANCH C
+ADDPOSSESSION(jar_of_honey,1)
+REMOVEPOSSESSION(empty_jar,1)
+*You fill a jar with honey. Wow!*
+JUMP A
+
+BRANCH D
+CHAR = Player
+*Actually I'd rather bee ;) somewhere else*
+ENTERROOM(Crossroads)
+
+
+
+
+
+DIALOGUE = 5
 ROOM = Dungeon
 PRIORITY = LOWEST
 REPEATABLE = TRUE
@@ -223,7 +141,7 @@ ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)
 
 
 
-DIALOGUE = 7
+DIALOGUE = 6
 ROOM = Dungeon
 PRIORITY = LOW
 
@@ -243,15 +161,15 @@ WAIT(3)
 BACKGROUND = Dungeon
 CENTER = Rat
 CHAR = Player
-Oh shit! It's a rat!
+Holy moly! It's a rat!
 CHAR = Rat
 Hello.
 I have something for you.
 CHAR = ...
 *The rat reveals a large piece of cheese.*
 *You can smell its odor before he even takes it out.*
-ADDEQUIPMENT(Stinky_Cheese)
-ADDITEM(bones,3)
+ADDPOSSESSION(cheese,1)
+ADDPOSSESSION(bones,3)
 CHAR = Rat
 Here you go.
 Goodbye.
@@ -264,11 +182,11 @@ I guess I got what I came here for.
 Time to leave.
 ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)
 
-DIALOGUE = 8
+DIALOGUE = 7
 ROOM = Dungeon
 PRIORITY = MEDIUM
 REPEATABLE = TRUE
-CONDITIONS = (VIEWED[1-5-D] && !VIEWED[1-8-A])
+CONDITIONS = (VIEWED[1-2-D] && !VIEWED[1-7-A])
 
 START_DIALOGUE
 BACKGROUND = Dungeon
@@ -280,7 +198,7 @@ Better start looking.
 CHAR = ...
 *You set off into the depths of the dungeon*
 BACKGROUND = Black
-CONDITIONBRANCH((!EQUIPPED[Stinky_Cheese]),A)
+CONDITIONBRANCH((POSSESSION[cheese] < 1),A)
 ADDTIME(MINUTE,30)
 CHAR = Player
 Gah!
@@ -318,7 +236,7 @@ CHAR = Player
 ADDTIME(HOUR,6)
 zzzzzzzz
 BACKGROUND = Dungeon
-Woah!
+Whoa!
 How long was I out?
 I should probably get out of this dungeon.
 ENTER3DROOM(3DTestScene,DoorTransform_Dungeon)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MeatGame.ThreeD;
+using MeatGame.Possession.UI;
 
 namespace MeatGame
 {
@@ -12,7 +13,7 @@ namespace MeatGame
         private void Awake()
         {
             Instance = this;
-            playerMenuObject = this.gameObject.transform.GetChild(1).gameObject;
+            playerMenuObject = gameObject.transform.GetChild(1).gameObject;
         }
 
         public void AssignMenuFreeze(MenuFreeze _menuFreeze)
@@ -32,12 +33,37 @@ namespace MeatGame
 
         void Update()
         {
-            if(Input.GetKeyDown(KeyBinds.Instance.keyTogglePlayerMenu) && playerMenuUseAllowed)
+            if(Input.GetKeyDown(KeyBinds.Instance.keyTogglePlayerMenu))
             {
-                playerMenuObject.SetActive(!playerMenuObject.activeSelf); // Toggle for now
+                if (menuIsOpen)
+                {
+                    ClosePlayerMenu();
+                }
+                else if (playerMenuUseAllowed)
+                {
+                    OpenPlayerMenu();
+                }
                 TryCheckMenuFreeze();
             }
         }
+
+        public bool menuIsOpen { get; private set; } = false;
+
+        public void OpenPlayerMenu()
+        {
+            playerMenuObject.SetActive(true);
+            menuIsOpen = true;
+        }
+
+        public void ClosePlayerMenu()
+        {
+            playerMenuObject.SetActive(false);
+            TooltipSystem.Instance.Hide();
+            UsableMenuSystem.Instance.CloseUseMenu();
+            menuIsOpen = false;
+        }
+
+        private GameObject playerMenuBGObject;
 
         public GameObject playerMenuObject { get; private set; }
 

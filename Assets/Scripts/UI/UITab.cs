@@ -7,14 +7,12 @@ namespace MeatGame
 {
     internal class UITab : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Awake()
-        {
-            tabSystem = this.gameObject.transform.parent.GetComponent<TabSystem>();
-        }
-
         public void SelectTab()
         {
+            if (tabSystem == null)
+            {
+                tabSystem = this.gameObject.transform.parent.GetComponent<TabSystem>();
+            }
             Image image = gameObject.GetComponent<Image>();
             image.sprite = selectedSprite;
             image.color = selectedColor;

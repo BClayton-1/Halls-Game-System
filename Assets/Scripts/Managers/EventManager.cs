@@ -18,7 +18,7 @@ namespace MeatGame.ThreeD
 
 			characterList = new List<string>()
 			{
-				"Bastard"
+				"Goober"
 			};
 		}
 

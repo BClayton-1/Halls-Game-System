@@ -20,13 +20,13 @@ namespace MeatGame
         public void OnPointerEnter(PointerEventData eventData)
         {
             float offset = (GetWorldRect(rectTransformA).width / 2) + 2;
-            TooltipSystem.SetPos(transform.position, offset);
-            TooltipSystem.Show(content, header);
+            TooltipSystem.Instance.SetPos(transform.position, offset);
+            TooltipSystem.Instance.Show(content, header);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            TooltipSystem.Hide();
+            TooltipSystem.Instance.Hide();
         }
 
         private Rect GetWorldRect(RectTransform rectTransform)

@@ -109,7 +109,7 @@ namespace MeatGame.Dialogue
         public bool CheckConditionSingle(string condition)
         {
             string[] stringKeywords = new string[] { "DOW" };
-            string[] intKeywords = new string[] { "DAY", "TIME", "Day", "Time", "TENACITY", "Tenacity", "COGNITION", "Cognition", "INFLUENCE", "Influence", "LUCK", "Luck", "ITEM[" };
+            string[] intKeywords = new string[] { "DAY", "TIME", "Day", "Time", "TENACITY", "Tenacity", "COGNITION", "Cognition", "INFLUENCE", "Influence", "LUCK", "Luck", "POSSESSION[" };
             string[] boolKeywords = new string[] { "&&", "&", "AND", "||", "|", "OR" };
             string signA = "";
 
@@ -165,17 +165,17 @@ namespace MeatGame.Dialogue
                         return CheckIntRange(x, condition); // e.g DAY[5-10]
                     }
                 }
-                else if (condition.StartsWith("ITEM["))
+                else if (condition.StartsWith("POSSESSION["))
                 {
-                    string _condition = condition.Substring("ITEM[".Length);
-                    string itemID = _condition.Substring(0, _condition.IndexOf("]"));
-                    x = InventoryManager.Instance.GetQuantity(itemID);
+                    string _condition = condition.Substring("POSSESSION[".Length);
+                    string identifier = _condition.Substring(0, _condition.IndexOf("]"));
+                    x = InventoryManager.Instance.GetQuantity(identifier);
                     _condition = _condition.Substring(0, _condition.IndexOf("]"));
-                    if (_condition.Contains("ITEM[")) // e.g (ITEM[Bones] > ITEM[Cheese])
+                    if (_condition.Contains("POSSESSION[")) // e.g (POSSESSION[bones] > POSSESSION[cheese])
                     {
-                        string _itemID = _condition.Substring(_condition.IndexOf("ITEM[") + "ITEM[".Length);
-                        _itemID = _itemID.Substring(0, _itemID.IndexOf("]"));
-                        y = InventoryManager.Instance.GetQuantity(_itemID);
+                        string _identifier = _condition.Substring(_condition.IndexOf("POSSESSION[") + "POSSESSION[".Length);
+                        _identifier = _identifier.Substring(0, _identifier.IndexOf("]"));
+                        y = InventoryManager.Instance.GetQuantity(_identifier);
                     }
 
                 }

@@ -27,26 +27,12 @@ namespace MeatGame.Possession
             XElement possessions_XML = XElement.Load("Assets/Resources/Data/possessions.xml");
             IEnumerable<XElement> possessionXElements = possessions_XML.Elements();
             int index = 0; // Used to keep track of the order the possessions are added in
-            foreach (var possession in possessionXElements)
+            foreach (XElement possession in possessionXElements)
             {
-                index++;
+                Possession possessionToAdd = new Possession(possession, index);
                 string _identifier = possession.Attribute("identifier").Value;
-                string _name = possession.Attribute("name").Value;
-                PossessionType _type;
-                PossessionType.TryParse(possession.Attribute("type").Value, out _type);
-                string _description = possession.Attribute("description").Value;
-                Sprite _inventoryIcon = null;
-                if (possession.Attribute("inventoryicon") != null)
-                {
-                    string inventoryIconPath = possession.Attribute("inventoryicon").Value;
-                    _inventoryIcon = Resources.Load<Sprite>("Images/Possessions/InventoryIcon/" + inventoryIconPath);
-                }
-                if (_type < PossessionType.Trinket)
-                {
-                    Possession possessionToAdd = new Possession(_identifier, _name, _type, index, _description, _inventoryIcon);
-                    possessionDict.Add(_identifier, possessionToAdd);
-                }
-                Debug.Log(_identifier + " loaded");
+                possessionDict.Add(_identifier, possessionToAdd);
+                index++;
             }
         }
 

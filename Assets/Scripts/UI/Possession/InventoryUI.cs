@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MeatGame.Possession.UI
 {
@@ -12,6 +13,7 @@ namespace MeatGame.Possession.UI
         private void Awake()
         {
             Instance = this;
+            usableSlotBG = Resources.Load<Sprite>("Images/UI/PlayerMenu/slotbg_usable");
         }
 
         void Start() // Create grids and labels for each possession type. The type of possesion determines where the grid will be instantiated
@@ -69,10 +71,21 @@ namespace MeatGame.Possession.UI
         {
             Transform targetGridTransform = groupUIDict[_possessionSlot.possession.type].transform.GetChild(1);
             GameObject inventorySlotObject = Instantiate(InventorySlotPrefab, targetGridTransform);
+            if (_possessionSlot.possession.isUsable)
+            {
+                UsableMenuTrigger usableMenuTrigger = inventorySlotObject.AddComponent<UsableMenuTrigger>();
+                usableMenuTrigger.SetUsableComponents(_possessionSlot.possession.usableComponents);
+                usableMenuTrigger.possessionIdentifier = _possessionSlot.possession.identifier;
+
+                inventorySlotObject.GetComponent<Image>().sprite = usableSlotBG;
+            }
             InventorySlotUI slotUIScript = inventorySlotObject.GetComponent<InventorySlotUI>();
             slotUIScript.Init(_possessionSlot);
+            slotUIDict.Add(_possessionSlot.possession.identifier, inventorySlotObject);
             targetGridTransform.parent.gameObject.SetActive(true);
         }
+
+        private Sprite usableSlotBG;
 
         public void UpdateExistingSlotUI(PossessionSlot _possessionSlot)
         {
@@ -84,6 +97,7 @@ namespace MeatGame.Possession.UI
         public void RemoveInventorySlotUI(string identifier)
         {
             GameObject slotToRemove = slotUIDict[identifier];
+            slotUIDict.Remove(identifier);
             if (slotToRemove.transform.parent.childCount == 1)
             {
                 slotToRemove.transform.parent.parent.gameObject.SetActive(false);

@@ -15,7 +15,7 @@ namespace MeatGame
         public LevelLoader Level_Loader;
 
         public int dialogueTxt = 0;
-        public int dialogueNumber = 1;
+        public int dialogueNumber = 0;
 
         public void StartNewGame()
         {
