@@ -30,7 +30,7 @@ NEWBRANCH
 A: Apiary | [H] OPTIONCONDITIONS(NOCOOLDOWN[Apiary])
 B: Home
 C: 3D test environment
-D: You have bones in your pocket! | [H] OPTIONCONDITIONS((POSSESSION[bones] >= 3) && !VIEWED[1-1-D])
+D: You have bones in your pocket! | [H] OPTIONCONDITIONS((POSSESSION[bones] >= 3) && !VIEWED[1-2-D])
 
 BRANCH A
 I guess I'll go to the apiary.

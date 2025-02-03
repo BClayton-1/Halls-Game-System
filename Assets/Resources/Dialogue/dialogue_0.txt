@@ -29,5 +29,5 @@ IGNORECOOLDOWN = True
 PLACENPC(Goober,NPCPos_Goober_1)
 
 START_DIALOGUE
-CHAR = Bastard
+CHAR = Goober
 Nice bones.
